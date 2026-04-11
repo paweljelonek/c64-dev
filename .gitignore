@@ -1,0 +1,8 @@
+.env
+
+# AI tools
+.claude
+.cursor
+.aider*
+.copilot
+.codeium
