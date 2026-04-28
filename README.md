@@ -13,7 +13,12 @@ c64-dev/
 ├── .gitignore
 ├── LICENSE
 ├── setup-c64-dev.sh   - install all tools (Linux Mint / Ubuntu / Debian)
-└── Makefile           - build and run projects
+├── Makefile           - build and run projects
+└── examples/
+    ├── hello-asm/     - Hello World in 6510 assembly (ACME)
+    ├── raster-asm/    - Raster color bars effect in assembly
+    ├── hello-c/       - Hello World in C (cc65)
+    └── colors-c/      - VIC-II color cycling in C (cc65)
 ```
 
 Projects live separately in `~/Projects/c64-projects/` - each as its own git repository.
@@ -27,6 +32,14 @@ Projects live separately in `~/Projects/c64-projects/` - each as its own git rep
 ```
 
 Installs: ACME, cc65, DASM, KickAssembler, VICE, C64Debugger, GoatTracker, Exomizer, pucrunch.
+
+Tools are installed in three locations:
+
+| Location        | What                                                        |
+|-----------------|-------------------------------------------------------------|
+| system (apt)    | `acme`, `cc65`, `vice`, `xa65`, `goattracker`, `sidplayfp` |
+| `~/.c64-dev/`   | source builds and archives (KickAssembler, DASM, etc.)      |
+| `~/.local/bin/` | compiled binaries and wrappers                              |
 
 ### 2. Configure
 
@@ -52,30 +65,44 @@ echo -e "*.prg\n*.rep\n*.map" > .gitignore
 
 ### 4. Build and run
 
+The Makefile supports two ways to specify what to build:
+
+**`PROJECT=name`** — builds a project from `C64_PROJECTS` directory (set in `.env`):
+
 ```bash
-make PROJECT=my-project           # assemble
-make run PROJECT=my-project       # assemble and launch in VICE
+make PROJECT=my-project           # build (auto-detects main.asm or main.c)
+make run PROJECT=my-project       # build and launch in VICE
 make debug PROJECT=my-project     # launch with VICE monitor
 make clean PROJECT=my-project     # remove build artifacts
-make list                         # list available projects (directories only)
+make list                         # list projects and examples
 ```
+
+**`DIR=path`** — builds a project in any directory, e.g. the bundled examples:
+
+```bash
+make DIR=examples/hello-asm       # build assembly example
+make run DIR=examples/hello-c     # build and run C example
+make clean DIR=examples/colors-c  # clean example build artifacts
+```
+
+Source type is detected automatically: `main.c` → cc65, `main.asm` → ACME.
 
 ## Tools
 
-| Tool         | Description                                                                 |
-|--------------|-----------------------------------------------------------------------------|
-| acme         | [ACME Assembler](https://sourceforge.net/projects/acme-crossass/) (default) |
-| cc65         | [cc65](https://cc65.github.io/) - C compiler for 6502/6510                  |
-| dasm         | [DASM](https://dasm-assembler.github.io/) - Assembler                       |
-| kickass      | [KickAssembler](http://www.theweb.dk/KickAssembler/) (requires Java)        |
-| x64sc        | [VICE](https://vice-emu.sourceforge.io/) - C64 emulator                     |
-| c64debugger  | [C64 Debugger](https://sourceforge.net/projects/c64-debugger/)              |
-| goattracker  | [GoatTracker](https://sourceforge.net/projects/goattracker2/) - SID tracker |
-| sidplayfp    | [sidplayfp](https://sourceforge.net/projects/sidplay-residfp/) - SID player |
-| exomizer     | [Exomizer](https://bitbucket.org/magli143/exomizer) - data compressor       |
-| pucrunch     | [pucrunch](https://github.com/mist64/pucrunch) - data compressor            |
-| c1541        | D64 disk image tool (part of VICE)                                          |
-| petcat       | PETSCII/ASCII converter (part of VICE)                                      |
+| Tool         | Description                              | Website                                                                                              |
+|--------------|------------------------------------------|------------------------------------------------------------------------------------------------------|
+| acme         | ACME Assembler (default)                 | https://sourceforge.net/projects/acme-crossass/                                                      |
+| cc65         | C compiler for 6502/6510                 | https://cc65.github.io/                                                                              |
+| dasm         | Assembler                                | https://dasm-assembler.github.io/                                                                    |
+| kickass      | KickAssembler (requires Java)            | http://www.theweb.dk/KickAssembler/                                                                  |
+| x64sc        | VICE - C64 emulator                      | https://vice-emu.sourceforge.io/                                                                     |
+| c64debugger  | C64 Debugger                             | https://sourceforge.net/projects/c64-debugger/                                                       |
+| goattracker  | GoatTracker - SID tracker                | https://sourceforge.net/projects/goattracker2/                                                       |
+| sidplayfp    | SID player                               | https://sourceforge.net/projects/sidplay-residfp/                                                    |
+| exomizer     | Data compressor                          | https://bitbucket.org/magli143/exomizer                                                              |
+| pucrunch     | Data compressor                          | https://github.com/mist64/pucrunch                                                                   |
+| c1541        | D64 disk image tool (part of VICE)       |                                                                                                      |
+| petcat       | PETSCII/ASCII converter (part of VICE)   |                                                                                                      |
 
 ## Contributing
 

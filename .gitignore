@@ -1,6 +1,94 @@
+# Local configuration
 .env
 
+# =============================================================================
+# C64 Build Artifacts
+# =============================================================================
+
+# Assembled / compiled program files
+*.prg
+*.p00
+
+# Assembler / linker output
+*.rep
+*.map
+*.sym
+*.lbl
+*.vs
+
+# cc65 intermediate files
+*.o
+*.s
+
+# Disk and tape images (generated — not source assets)
+*.d64
+*.d71
+*.d81
+*.d82
+*.g64
+*.t64
+*.tap
+
+# Compressed / crunched output
+*.exo
+*.lzma
+
+# =============================================================================
+# VICE Emulator
+# =============================================================================
+
+vice.log
+*.vsf
+fliplist-*.vfl
+
+# =============================================================================
+# OS
+# =============================================================================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+desktop.ini
+ehthumbs.db
+
+# =============================================================================
+# Editors
+# =============================================================================
+
+# Vim / Neovim
+*.swp
+*.swo
+*~
+
+# Emacs
+\#*\#
+.#*
+
+# JetBrains (IntelliJ, CLion, PyCharm, etc.)
+.idea/
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# Visual Studio
+.vs/
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Zed
+.zed/
+
+# =============================================================================
 # AI tools
+# =============================================================================
+
 .claude
 .cursor
 .aider*
