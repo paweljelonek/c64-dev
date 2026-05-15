@@ -6,6 +6,7 @@
 Development environment for Commodore 64 - 6510 assembler, VICE emulator, debugger and helper tools.
 
 > 🐧 **Linux only** - tested on Ubuntu, Linux Mint and Debian-based distributions.
+> Support for other Linux distros, macOS or Windows may or may not happen - depends on available time and motivation.
 
 
 ## Structure
