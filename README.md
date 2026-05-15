@@ -17,7 +17,8 @@ c64-dev/
 ├── .env.dist          - configuration template
 ├── .gitignore
 ├── LICENSE
-├── setup-c64-dev.sh   - install all tools (Linux Mint / Ubuntu / Debian)
+├── setup.sh           - install all tools (Linux Mint / Ubuntu / Debian)
+├── remove.sh          - uninstall everything installed by setup.sh
 ├── Makefile           - build and run projects
 └── examples/
     ├── hello-asm/     - Hello World in 6510 assembly (ACME)
@@ -33,7 +34,7 @@ Projects live separately in `~/Projects/c64-projects/` - each as its own git rep
 ### 1. Install tools
 
 ```bash
-./setup-c64-dev.sh
+./setup.sh
 ```
 
 Installs: ACME, cc65, DASM, KickAssembler, VICE, C64Debugger, GoatTracker, Exomizer, pucrunch.
@@ -108,6 +109,21 @@ Source type is detected automatically: `main.c` → cc65, `main.asm` → ACME.
 | pucrunch     | Data compressor                          | https://github.com/mist64/pucrunch                                                                   |
 | c1541        | D64 disk image tool (part of VICE)       |                                                                                                      |
 | petcat       | PETSCII/ASCII converter (part of VICE)   |                                                                                                      |
+
+## Uninstall
+
+```bash
+./remove.sh
+```
+
+Removes:
+- `~/.c64-dev/` — all source builds and downloaded tools (KickAssembler, DASM, C64Debugger, Exomizer, pucrunch, and any source-built: cc65, ACME, GoatTracker)
+- `~/.local/bin/` — binaries installed by setup.sh
+- PATH entry added to shell rc (`~/.bashrc` / `~/.zshrc`)
+
+Optionally (interactive prompt): removes apt packages — `acme`, `vice`, `xa65`, `cc65`, `goattracker`, `sidplayfp`, `default-jre`.
+
+General packages like `build-essential`, `git`, `cmake`, `python3` are not removed.
 
 ## Contributing
 

@@ -20,6 +20,13 @@ ACME     = acme
 CC65     = cl65
 VICE     = flatpak run --command=x64sc net.sf.VICE
 
+RED    := \033[0;31m
+GREEN  := \033[0;32m
+YELLOW := \033[1;33m
+CYAN   := \033[0;36m
+BOLD   := \033[1m
+NC     := \033[0m
+
 -include .env
 
 # cc65 needs CC65_HOME to find platform headers and libraries.
@@ -42,20 +49,20 @@ SYM = $(PROJ_DIR)/main.sym
 .DEFAULT_GOAL := help
 
 _require_dir:
-	@test -n "$(PROJ_DIR)" || (echo "ERROR: Specify PROJECT=name or DIR=path" && exit 1)
+	@test -n "$(PROJ_DIR)" || (printf "$(RED)ERROR:$(NC) Specify PROJECT=name or DIR=path\n" && exit 1)
 
 all: _require_dir
 	@if [ -f "$(PROJ_DIR)/main.c" ]; then \
-		echo ">>> Compiling C: $(PROJ_DIR)/main.c"; \
+		printf "$(CYAN)>>>$(NC) Compiling C: $(BOLD)$(PROJ_DIR)/main.c$(NC)\n"; \
 		$(CC65) -t c64 -O -Ln $(LBL) -o $(PRG) $(PROJ_DIR)/main.c; \
 	elif [ -f "$(PROJ_DIR)/main.asm" ]; then \
-		echo ">>> Assembling: $(PROJ_DIR)/main.asm"; \
+		printf "$(CYAN)>>>$(NC) Assembling: $(BOLD)$(PROJ_DIR)/main.asm$(NC)\n"; \
 		$(ACME) -f cbm --cpu 6510 --report $(REP) --symbollist $(SYM) -o $(PRG) $(PROJ_DIR)/main.asm; \
 		awk 'NF>=3 && $$2=="=" { val=$$3; gsub(/\$$/, "", val); printf "al C:%s .%s\n", val, $$1 }' $(SYM) > $(LBL); \
 	else \
-		echo "ERROR: No source found in $(PROJ_DIR) (expected main.c or main.asm)" && exit 1; \
+		printf "$(RED)ERROR:$(NC) No source found in $(PROJ_DIR) (expected main.c or main.asm)\n" && exit 1; \
 	fi
-	@echo ">>> Built: $(PRG) ($$(wc -c < $(PRG)) bytes)"
+	@printf "$(GREEN)>>>$(NC) Built: $(BOLD)$(PRG)$(NC) ($$(wc -c < $(PRG)) bytes)\n"
 
 run: _require_dir all
 	$(VICE) -autostart $(PRG) &
@@ -68,32 +75,44 @@ clean: _require_dir
 	      $(PROJ_DIR)/*.o $(PROJ_DIR)/*.s $(PROJ_DIR)/*.lbl $(PROJ_DIR)/*.sym
 
 list:
-	@echo "=== Projects ($(C64_PROJECTS)) ==="
-	@ls -1d $(C64_PROJECTS)/*/ 2>/dev/null | xargs -I{} basename {} || echo "  (directory not found)"
-	@echo ""
-	@echo "=== Examples (./examples/) ==="
+	@if [ -z "$(C64_PROJECTS)" ]; then \
+		printf "$(BOLD)=== Projects ===$(NC)\n"; \
+		printf "  $(YELLOW)C64_PROJECTS is not set.$(NC)\n"; \
+		printf "  Copy $(BOLD).env.dist$(NC) to $(BOLD).env$(NC) and set the path:\n"; \
+		printf "    cp .env.dist .env\n"; \
+		printf "    # edit .env: C64_PROJECTS=/path/to/your/projects\n"; \
+	elif [ ! -d "$(C64_PROJECTS)" ]; then \
+		printf "$(BOLD)=== Projects ($(C64_PROJECTS)) ===$(NC)\n"; \
+		printf "  $(YELLOW)Directory not found.$(NC)\n"; \
+		printf "  Create it: mkdir -p $(C64_PROJECTS)\n"; \
+	else \
+		printf "$(BOLD)=== Projects ($(C64_PROJECTS)) ===$(NC)\n"; \
+		ls -1d $(C64_PROJECTS)/*/ 2>/dev/null | xargs -I{} basename {} || printf "  $(YELLOW)(no projects yet)$(NC)\n"; \
+	fi
+	@printf "\n"
+	@printf "$(BOLD)=== Examples (./examples/) ===$(NC)\n"
 	@for d in examples/*/; do \
 		name=$$(basename "$$d"); \
 		src=""; \
 		[ -f "$$d/main.asm" ] && src="asm"; \
 		[ -f "$$d/main.c"   ] && src="c";   \
-		echo "  $$name  [$$src]  →  make run DIR=$$d"; \
+		printf "  $(CYAN)%-16s$(NC)  [$(GREEN)%-3s$(NC)]  →  make run DIR=$$d\n" "$$name" "$$src"; \
 	done
 
 help:
-	@echo "C64 development environment — ACME Assembler + cc65 C Compiler"
-	@echo ""
-	@echo "Usage:"
-	@echo "  make PROJECT=name          build project from C64_PROJECTS dir"
-	@echo "  make DIR=path              build project in given directory"
-	@echo "  make run PROJECT=name      build and launch in VICE"
-	@echo "  make run DIR=path          build directory and launch in VICE"
-	@echo "  make debug PROJECT=name    build and launch with VICE monitor + symbols"
-	@echo "  make debug DIR=path        build and launch with VICE monitor + symbols"
-	@echo "  make clean PROJECT=name    remove build artifacts"
-	@echo "  make clean DIR=path        remove build artifacts from directory"
-	@echo "  make list                  show available projects and examples"
-	@echo ""
-	@echo "Source detection (auto):"
-	@echo "  main.c   → compiled with cc65 (cl65 -t c64)"
-	@echo "  main.asm → assembled with ACME"
+	@printf "$(BOLD)C64 development environment$(NC) — ACME Assembler + cc65 C Compiler\n"
+	@printf "\n"
+	@printf "$(BOLD)Usage:$(NC)\n"
+	@printf "  $(CYAN)make PROJECT=name$(NC)          build project from C64_PROJECTS dir\n"
+	@printf "  $(CYAN)make DIR=path$(NC)              build project in given directory\n"
+	@printf "  $(CYAN)make run PROJECT=name$(NC)      build and launch in VICE\n"
+	@printf "  $(CYAN)make run DIR=path$(NC)          build directory and launch in VICE\n"
+	@printf "  $(CYAN)make debug PROJECT=name$(NC)    build and launch with VICE monitor + symbols\n"
+	@printf "  $(CYAN)make debug DIR=path$(NC)        build and launch with VICE monitor + symbols\n"
+	@printf "  $(CYAN)make clean PROJECT=name$(NC)    remove build artifacts\n"
+	@printf "  $(CYAN)make clean DIR=path$(NC)        remove build artifacts from directory\n"
+	@printf "  $(CYAN)make list$(NC)                  show available projects and examples\n"
+	@printf "\n"
+	@printf "$(BOLD)Source detection (auto):$(NC)\n"
+	@printf "  main.c   → compiled with cc65 (cl65 -t c64)\n"
+	@printf "  main.asm → assembled with ACME\n"
