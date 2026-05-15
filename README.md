@@ -1,8 +1,12 @@
 # c64-dev
 
-> **Early version** - work in progress, expect breaking changes.
+> ⚠️ **Early version** - work in progress, expect breaking changes.
+
 
 Development environment for Commodore 64 - 6510 assembler, VICE emulator, debugger and helper tools.
+
+> 🐧 **Linux only** - tested on Ubuntu, Linux Mint and Debian-based distributions.
+
 
 ## Structure
 
@@ -67,7 +71,7 @@ echo -e "*.prg\n*.rep\n*.map" > .gitignore
 
 The Makefile supports two ways to specify what to build:
 
-**`PROJECT=name`** — builds a project from `C64_PROJECTS` directory (set in `.env`):
+**`PROJECT=name`** - builds a project from `C64_PROJECTS` directory (set in `.env`):
 
 ```bash
 make PROJECT=my-project           # build (auto-detects main.asm or main.c)
@@ -77,7 +81,7 @@ make clean PROJECT=my-project     # remove build artifacts
 make list                         # list projects and examples
 ```
 
-**`DIR=path`** — builds a project in any directory, e.g. the bundled examples:
+**`DIR=path`** - builds a project in any directory, e.g. the bundled examples:
 
 ```bash
 make DIR=examples/hello-asm       # build assembly example
@@ -123,6 +127,3 @@ pawel.jelonek [at] gmail [dot] com
 
 MIT - see [LICENSE](LICENSE)
 
-## Author
-
-**Paweł Jelonek** - pawel.jelonek [at] gmail [dot] com

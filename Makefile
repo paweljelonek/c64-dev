@@ -38,8 +38,8 @@ REP = $(PROJ_DIR)/main.rep
 LBL = $(PROJ_DIR)/main.lbl
 SYM = $(PROJ_DIR)/main.sym
 
-.PHONY: all run debug clean list _require_dir
-.DEFAULT_GOAL := all
+.PHONY: all run debug clean list help _require_dir
+.DEFAULT_GOAL := help
 
 _require_dir:
 	@test -n "$(PROJ_DIR)" || (echo "ERROR: Specify PROJECT=name or DIR=path" && exit 1)
@@ -79,3 +79,21 @@ list:
 		[ -f "$$d/main.c"   ] && src="c";   \
 		echo "  $$name  [$$src]  →  make run DIR=$$d"; \
 	done
+
+help:
+	@echo "C64 development environment — ACME Assembler + cc65 C Compiler"
+	@echo ""
+	@echo "Usage:"
+	@echo "  make PROJECT=name          build project from C64_PROJECTS dir"
+	@echo "  make DIR=path              build project in given directory"
+	@echo "  make run PROJECT=name      build and launch in VICE"
+	@echo "  make run DIR=path          build directory and launch in VICE"
+	@echo "  make debug PROJECT=name    build and launch with VICE monitor + symbols"
+	@echo "  make debug DIR=path        build and launch with VICE monitor + symbols"
+	@echo "  make clean PROJECT=name    remove build artifacts"
+	@echo "  make clean DIR=path        remove build artifacts from directory"
+	@echo "  make list                  show available projects and examples"
+	@echo ""
+	@echo "Source detection (auto):"
+	@echo "  main.c   → compiled with cc65 (cl65 -t c64)"
+	@echo "  main.asm → assembled with ACME"
